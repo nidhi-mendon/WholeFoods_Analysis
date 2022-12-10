@@ -1,0 +1,1579 @@
+
+/* A1: SQL Analysis Assessment (Individual)
+Name: Nidhi Mendon
+Professor: Chase Kusterer
+Course: Business Analysis with Structured Data
+Program: MBAN - Dual Degree */
+
+
+USE ddmban_sql_analysis;
+
+
+
+/* Selecting all necessary variables to check the data */
+
+SELECT 
+    ID,
+    category,
+    subcategory,
+    product,
+    vegan,
+    glutenfree,
+    ketofriendly,
+    vegetarian,
+    organic,
+    dairyfree,
+    sugarconscious,
+    paleofriendly,
+    wholefoodsdiet,
+    lowsodium,
+    kosher,
+    lowfat,
+    price,
+    caloriesperserving,
+    servingsize,
+    servingsizeunits,
+    totalsize,
+    totalsizeunits,
+    totalsecondarysize,
+    secondarysizeunits
+FROM
+    ddmban_data;
+
+
+
+/* Calculating mean price by dietary options excluding 'Sea Salt Caramel Frozen Yoghurt Gelato' from Kosher since inaccurate pricing affects the mean value */
+
+SELECT 
+    ROUND(AVG(price) / 100, 2) AS total_mean, -- 10.34
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegan = 1) AS vegan_mean, -- 7.43
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            glutenfree = 1) AS glutenfree_mean, -- 10
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            ketofriendly = 1) AS ketofriendly_mean, -- 9.36
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegetarian = 1) AS vegetarian_mean, -- 7.86
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            organic = 1) AS organic_mean, -- 6.25
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            dairyfree = 1) AS dairyfree_mean, -- 7.9
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            sugarconscious = 1) AS sugarconscious_mean, -- 6.9
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            paleofriendly = 1) AS paleofriendly_mean, -- 8.65
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            wholefoodsdiet = 1) AS wholefoodsdiet_mean, -- 6.74
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowsodium = 1) AS lowsodium_mean, -- 5.55
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            kosher = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS kosher_mean, -- 8.01 
+    (SELECT 
+            ROUND(AVG(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowfat = 1) AS lowfat_mean -- 6.68
+FROM
+    ddmban_data;
+
+
+
+/* Calculating median price by dietary options */
+
+SELECT 
+    ROUND(price / 100, 2) AS total_median, -- 5.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegan = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 64) AS vegan_median, -- 4.19
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            glutenfree = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 33) AS glutenfree_median, -- 4.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            ketofriendly = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 48) AS ketofriendly_median, -- 5.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegetarian = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 74) AS vegetarian_median, -- 4.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            organic = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 42) AS organic_median, -- 5
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            dairyfree = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 102) AS dairyfree_median, -- 5
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            sugarconscious = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 48) AS sugarconscious_median, -- 4.79
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            paleofriendly = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 46) AS paleofriendly_median, -- 5
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            wholefoodsdiet = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 38) AS wholefoodsdiet_median, -- 5.29
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowsodium = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 57) AS lowsodium_median, -- 3.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            kosher = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 39) AS kosher_median, -- 5.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowfat = 1
+        ORDER BY price DESC
+        LIMIT 1 OFFSET 36) AS lowfat_median -- 4.79
+FROM
+    ddmban_data
+ORDER BY price DESC
+LIMIT 1 OFFSET 133;
+
+
+
+/* Calculating mode price by dietary options */
+
+SELECT 
+    ROUND(price / 100, 2) AS total_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegan = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS vegan_mode, -- 1.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            glutenfree = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS glutenfree_mode, -- 6.49
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            ketofriendly = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS ketofriendly_mode, -- 5.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegetarian = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS vegetarian_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            organic = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS organic_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            dairyfree = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS dairyfree_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            sugarconscious = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS sugarconscious_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            paleofriendly = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS paleofriendly_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            wholefoodsdiet = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS wholefoodsdiet_mode, -- 3.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowsodium = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS lowsodium_mode, -- 1.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            kosher = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS kosher_mode, -- 6.99
+    (SELECT 
+            ROUND(price / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowfat = 1
+        GROUP BY price
+        ORDER BY COUNT(price) DESC , price DESC
+        LIMIT 1) AS lowfat_mode -- 6.99
+FROM
+    ddmban_data
+GROUP BY price
+ORDER BY COUNT(price) DESC , price DESC
+LIMIT 1;
+
+
+
+/* Calculating standard deviation by dietary options excluding 'Sea Salt Caramel Frozen 
+Yoghurt Gelato' from Kosher since inaccurate pricing affects the stddev value */
+
+SELECT 
+    ROUND(STDDEV(price) / 100, 2) AS totalprice_stddev, -- 11.03
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegan = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS vegan_stddev, -- 11.67
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            glutenfree = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS glutenfree_stddev, -- 15.57
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            ketofriendly = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS ketofriendly_stddev, -- 13.13
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegetarian = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS vegetarian_stddev, -- 11.85
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            organic = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS organic_stddev, -- 6.45
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            dairyfree = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS dairyfree_stddev, -- 11.46
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            sugarconscious = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS sugarconscious_stddev, -- 10.19
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            paleofriendly = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS paleofriendly_stddev, -- 11.7
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            wholefoodsdiet = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS wholefoodsdiet_stddev, -- 6.36
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowsodium = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS lowsodium_stddev, -- 7.84
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            kosher = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS kosher_stddev, -- 11.97
+    (SELECT 
+            ROUND(STDDEV(price) / 100, 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowfat = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS lowfat_stddev -- 10.44
+FROM
+    ddmban_data
+WHERE product != 'Sea Salt Caramel Frozen Yoghurt Gelato';
+
+
+
+/* Calculating variance by dietary options excluding 'Sea Salt Caramel Frozen Yoghurt Gelato' 
+from Kosher since inaccurate pricing affects the variance value */
+
+SELECT 
+    ROUND(VARIANCE(price / 100), 2) AS totalprice_variance, -- 121.67
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegan = 1) AS vegan_variance, -- 136.2
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            glutenfree = 1) AS glutenfree_variance, -- 242.47
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            ketofriendly = 1) AS ketofriendly_variance, -- 172.34
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            vegetarian = 1) AS vegetarian_variance, -- 140.43
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            organic = 1) AS organic_variance, -- 41.6
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            dairyfree = 1) AS dairyfree_variance, -- 131.41
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            sugarconscious = 1) AS sugarconscious_variance, -- 103.73
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            paleofriendly = 1) AS paleofriendly_variance, -- 136.86
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            wholefoodsdiet = 1) AS wholefoodsdiet_variance, -- 40.51
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowsodium = 1) AS lowsodium_variance, -- 61.42
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            kosher = 1
+                AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato') AS kosher_variance, -- 143.27
+    (SELECT 
+            ROUND(VARIANCE(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            lowfat = 1) AS lowfat_variance -- 108.99
+FROM
+    ddmban_data
+WHERE 
+    product != 'Sea Salt Caramel Frozen Yoghurt Gelato';
+
+
+
+/* Z-test for all options since the variance is known and excluding Sea Salt Caramel Frozen 
+Yoghurt Gelato since there is inaccurate price information and by doing this we can calculate the z-scores */
+
+
+WITH price_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data)
+SELECT product, ROUND(ABS(price - price_stats.meanprice) / price_stats.stddevprice, 2) AS zscore_price
+FROM price_stats, 
+	 ddmban_data
+WHERE product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_price DESC;
+
+
+/* Z-scores for vegan options */
+
+WITH vegan_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE vegan = 1)
+SELECT product, ROUND(ABS(price - vegan_stats.meanprice) / vegan_stats.stddevprice, 2) AS zscore_vegan
+FROM vegan_stats, 
+	 ddmban_data
+WHERE vegan = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_vegan DESC;
+
+
+/* Z-scores for glutenfree options */
+
+WITH glutenfree_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE glutenfree = 1)
+SELECT product, 
+	   ROUND(ABS(price - glutenfree_stats.meanprice) / glutenfree_stats.stddevprice, 2) AS zscore_glutenfree
+FROM glutenfree_stats, 
+	 ddmban_data
+WHERE glutenfree = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_glutenfree DESC;
+
+
+/* Z-scores for ketofriendly options */
+
+WITH ketofriendly_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE ketofriendly = 1)
+SELECT product, 
+	   ROUND(ABS(price - ketofriendly_stats.meanprice) / ketofriendly_stats.stddevprice, 2) AS zscore_ketofriendly
+FROM ketofriendly_stats, 
+	 ddmban_data
+WHERE ketofriendly = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_ketofriendly DESC;
+
+
+/* Z-scores for vegetarian options */
+
+WITH vegetarian_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE vegetarian = 1)
+SELECT product, 
+	   ROUND(ABS(price - vegetarian_stats.meanprice) / vegetarian_stats.stddevprice, 2) AS zscore_vegetarian
+FROM vegetarian_stats, 
+	 ddmban_data
+WHERE vegetarian = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_vegetarian DESC;
+
+
+/* Z-scores for organic options */
+
+WITH organic_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE organic = 1)
+SELECT product, 
+	   ROUND(ABS(price - organic_stats.meanprice) / organic_stats.stddevprice, 2) AS zscore_organic
+FROM organic_stats, 
+	 ddmban_data
+WHERE organic = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_organic DESC;
+
+
+/* Z-scores for dairyfree options */
+
+WITH dairyfree_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE dairyfree = 1)
+SELECT product, 
+	   ROUND(ABS(price - dairyfree_stats.meanprice) / dairyfree_stats.stddevprice, 2) AS zscore_dairyfree
+FROM dairyfree_stats, 
+	 ddmban_data
+WHERE dairyfree = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_dairyfree DESC;
+
+
+/* Z-scores for sugarconscious options */
+
+WITH sugarconscious_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE sugarconscious = 1)
+SELECT product, 
+	   ROUND(ABS(price - sugarconscious_stats.meanprice) / sugarconscious_stats.stddevprice, 2) AS zscore_sugarconscious
+FROM sugarconscious_stats, 
+	 ddmban_data
+WHERE sugarconscious = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_sugarconscious DESC;
+
+
+/* Z-scores for paleofriendly options */
+
+WITH paleofriendly_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE paleofriendly = 1)
+SELECT product, 
+	   ROUND(ABS(price - paleofriendly_stats.meanprice) / paleofriendly_stats.stddevprice, 2) AS zscore_paleofriendly
+FROM paleofriendly_stats, 
+	 ddmban_data
+WHERE paleofriendly = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_paleofriendly DESC;
+
+
+/* Z-scores for wholefoodsdiet options */
+
+WITH wholefoodsdiet_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE wholefoodsdiet = 1)
+SELECT product, 
+	   ROUND(ABS(price - wholefoodsdiet_stats.meanprice) / wholefoodsdiet_stats.stddevprice, 2) AS zscore_wholefoodsdiet
+FROM wholefoodsdiet_stats, 
+	 ddmban_data
+WHERE wholefoodsdiet = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_wholefoodsdiet DESC;
+
+
+/* Z-scores for lowsodium options */
+
+WITH lowsodium_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE lowsodium = 1)
+SELECT product, 
+	   ROUND(ABS(price - lowsodium_stats.meanprice) / lowsodium_stats.stddevprice, 2) AS zscore_lowsodium
+FROM lowsodium_stats, 
+	 ddmban_data
+WHERE lowsodium = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_lowsodium DESC;
+
+
+/* Z-scores for kosher options */
+
+WITH kosher_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE kosher = 1)
+SELECT product, 
+	   ROUND(ABS(price - kosher_stats.meanprice) / kosher_stats.stddevprice, 2) AS zscore_kosher
+FROM kosher_stats, 
+	 ddmban_data
+WHERE kosher = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_kosher DESC;
+
+
+/* Z-scores for lowfat options */
+
+WITH lowfat_stats AS 
+	(SELECT ROUND(AVG(price), 2) AS meanprice, 
+			ROUND(STDDEV(price), 2) AS stddevprice 
+	 FROM ddmban_data
+     WHERE lowfat = 1)
+SELECT product, 
+	   ROUND(ABS(price - lowfat_stats.meanprice) / lowfat_stats.stddevprice, 2) AS zscore_lowfat
+FROM lowfat_stats, 
+	 ddmban_data
+WHERE lowfat = 1
+AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+ORDER BY zscore_lowfat DESC;
+    
+
+
+/* Calculating the range of prices by dietary preferences */
+
+SELECT 
+    ROUND(MAX(price / 100) - MIN(price / 100), 2) AS total_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND vegan = 1) AS vegan_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND glutenfree = 1) AS glutenfree_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND ketofriendly = 1) AS ketofriendly_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND vegetarian = 1) AS vegetarian_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND organic = 1) AS organic_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND dairyfree = 1) AS dairyfree_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND sugarconscious = 1) AS sugarconscious_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND paleofriendly = 1) AS paleofriendly_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND wholefoodsdiet = 1) AS wholefoodsdiet_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND lowsodium = 1) AS lowsodium_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND kosher = 1) AS kosher_range,
+    (SELECT 
+            ROUND(MAX(price / 100) - MIN(price / 100), 2)
+        FROM
+            ddmban_data
+        WHERE
+            product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+                AND lowfat = 1) AS lowfat_range
+FROM
+    ddmban_data
+WHERE
+    product != 'Sea Salt Caramel Frozen Yoghurt Gelato';
+
+
+
+/* Histogram bins for vegan diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    vegan = 1
+GROUP BY 1
+ORDER BY price_bins; -- Looking at the results we can say that the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for glutenfree diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    glutenfree = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for ketofriendly diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '6000' THEN '5001 - 6000'
+        WHEN price BETWEEN '6001' AND '7500' THEN '6001 - 7500'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    ketofriendly = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for vegetarian diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    vegetarian = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for organic diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    organic = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for dairy free diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7500' THEN '5001 - 7500'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    dairyfree = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for sugar conscious diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    sugarconscious = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for paleofriendly diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    paleofriendly = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for wholefoodsdiet diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    wholefoodsdiet = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for low sodium diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    lowsodium = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for kosher diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    kosher = 1
+        AND product != 'Sea Salt Caramel Frozen Yoghurt Gelato'
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+/* Histogram bins for lowfat diet */
+
+SELECT 
+    CASE
+        WHEN price BETWEEN '0' AND '500' THEN '0 - 500'
+        WHEN price BETWEEN '501' AND '1000' THEN '501 - 1000'
+        WHEN price BETWEEN '1001' AND '2000' THEN '1001 - 2000'
+        WHEN price BETWEEN '2001' AND '3000' THEN '2001 - 3000'
+        WHEN price BETWEEN '3001' AND '4000' THEN '3001 - 4000'
+        WHEN price BETWEEN '4001' AND '5000' THEN '4001 - 5000'
+        WHEN price BETWEEN '5001' AND '7000' THEN '5001 - 7000'
+    END AS price_bins,
+    COUNT(*) AS no_of_products
+FROM
+    ddmban_data
+WHERE
+    lowfat = 1
+GROUP BY 1
+ORDER BY price_bins; -- the distribution is right skewed and the mean is greater than the median
+
+
+
+/* CALCULATING CORRELATION BETWEEN DIETARY PREFERENCES AND PRICE */
+
+-- Vegan
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 vegan AS a,
+     	(SELECT AVG(vegan) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.08 */
+
+-- Gluten-free
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 glutenfree AS a,
+     	(SELECT AVG(glutenfree) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.01 */
+
+-- Ketofriendly
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 ketofriendly AS a,
+     	(SELECT AVG(ketofriendly) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.02 */
+
+-- Vegetarian
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 vegetarian AS a,
+     	(SELECT AVG(vegetarian) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.07 */
+
+-- Organic
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 organic AS a,
+     	(SELECT AVG(organic) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.07 */
+
+-- Dairyfree
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 dairyfree AS a,
+     	(SELECT AVG(dairyfree) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.12 */
+
+-- Sugarconscious
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+    	 sugarconscious AS a,
+     	(SELECT AVG(sugarconscious) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.07 */
+
+-- Paleofriendly
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 paleofriendly AS a,
+     	(SELECT AVG(paleofriendly) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.03 */
+
+-- Wholefoodsdiet
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 wholefoodsdiet AS a,
+     	(SELECT AVG(wholefoodsdiet) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.06 */
+
+-- Lowsodium
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 lowsodium AS a,
+     	(SELECT AVG(lowsodium) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.11 */
+
+-- Kosher
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 kosher AS a,
+     	(SELECT AVG(kosher) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* 0.09 */
+
+-- Lowfat
+
+WITH correl_stats AS 
+	(SELECT price/100 AS x,
+	(SELECT AVG(price/100) FROM ddmban_data) AS y,
+     	 lowfat AS a,
+     	(SELECT AVG(lowfat) FROM ddmban_data) AS b
+    	FROM ddmban_data)
+SELECT ROUND(SUM((x-y)*(a-b)) / SQRT(SUM((x-y)*(x-y))*SUM((a-b)*(a-b))), 2)
+FROM ddmban_data,
+correl_stats; /* -0.06 */
+
+
+
+/* Degree of freedom for vegan and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            vegan = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+
+
+/* We calculate the degree of freedom and t-scores and refer the t-distribution chart to derive the 
+P-value for our analysis */
+
+/* T-test for vegan and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE vegan = 1) AS x,
+ (SELECT AVG(vegan/100) FROM ddmban_data WHERE vegan = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE vegan = 1) AS a,
+ (SELECT STDDEV(vegan/100) FROM ddmban_data WHERE vegan = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE vegan = 1) AS m,
+ (SELECT COUNT(vegan/100) FROM ddmban_data WHERE vegan = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for glutenfree and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            glutenfree = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for glutenfree and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE glutenfree = 1) AS x,
+ (SELECT AVG(glutenfree/100) FROM ddmban_data WHERE glutenfree = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE glutenfree = 1) AS a,
+ (SELECT STDDEV(glutenfree/100) FROM ddmban_data WHERE glutenfree = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE glutenfree = 1) AS m,
+ (SELECT COUNT(glutenfree/100) FROM ddmban_data WHERE glutenfree = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for ketofriendly and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            ketofriendly = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for ketofriendly and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE ketofriendly = 1) AS x,
+ (SELECT AVG(ketofriendly/100) FROM ddmban_data WHERE ketofriendly = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE ketofriendly = 1) AS a,
+ (SELECT STDDEV(ketofriendly/100) FROM ddmban_data WHERE ketofriendly = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE ketofriendly = 1) AS m,
+ (SELECT COUNT(ketofriendly/100) FROM ddmban_data WHERE ketofriendly = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for vegetarian and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            vegetarian = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for vegetarian and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE vegetarian = 1) AS x,
+ (SELECT AVG(vegetarian/100) FROM ddmban_data WHERE vegetarian = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE vegetarian = 1) AS a,
+ (SELECT STDDEV(vegetarian/100) FROM ddmban_data WHERE vegetarian = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE vegetarian = 1) AS m,
+ (SELECT COUNT(vegetarian/100) FROM ddmban_data WHERE vegetarian = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for organic and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            organic = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+
+/* T-test for organic and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE organic = 1) AS x,
+ (SELECT AVG(organic/100) FROM ddmban_data WHERE organic = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE organic = 1) AS a,
+ (SELECT STDDEV(organic/100) FROM ddmban_data WHERE organic = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE organic = 1) AS m,
+ (SELECT COUNT(organic/100) FROM ddmban_data WHERE organic = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for dairyfree and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            dairyfree = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+
+/* T-test for dairyfree and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE dairyfree = 1) AS x,
+ (SELECT AVG(dairyfree/100) FROM ddmban_data WHERE dairyfree = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE dairyfree = 1) AS a,
+ (SELECT STDDEV(dairyfree/100) FROM ddmban_data WHERE dairyfree = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE dairyfree = 1) AS m,
+ (SELECT COUNT(dairyfree/100) FROM ddmban_data WHERE dairyfree = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for sugarconscious and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            sugarconscious = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for sugarconscious and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE sugarconscious = 1) AS x,
+ (SELECT AVG(sugarconscious/100) FROM ddmban_data WHERE sugarconscious = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE sugarconscious = 1) AS a,
+ (SELECT STDDEV(sugarconscious/100) FROM ddmban_data WHERE sugarconscious = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE sugarconscious = 1) AS m,
+ (SELECT COUNT(sugarconscious/100) FROM ddmban_data WHERE sugarconscious = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for paleofriendly and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            paleofriendly = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for paleofriendly and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE paleofriendly = 1) AS x,
+ (SELECT AVG(paleofriendly/100) FROM ddmban_data WHERE paleofriendly = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE paleofriendly = 1) AS a,
+ (SELECT STDDEV(paleofriendly/100) FROM ddmban_data WHERE paleofriendly = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE paleofriendly = 1) AS m,
+ (SELECT COUNT(paleofriendly/100) FROM ddmban_data WHERE paleofriendly = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for wholefoodsdiet and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            wholefoodsdiet = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for wholefoodsdiet and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE wholefoodsdiet = 1) AS x,
+ (SELECT AVG(wholefoodsdiet/100) FROM ddmban_data WHERE wholefoodsdiet = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE wholefoodsdiet = 1) AS a,
+ (SELECT STDDEV(wholefoodsdiet/100) FROM ddmban_data WHERE wholefoodsdiet = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE wholefoodsdiet = 1) AS m,
+ (SELECT COUNT(wholefoodsdiet/100) FROM ddmban_data WHERE wholefoodsdiet = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for lowsodium and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            lowsodium = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for lowsodium and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE lowsodium = 1) AS x,
+ (SELECT AVG(lowsodium/100) FROM ddmban_data WHERE lowsodium = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE lowsodium = 1) AS a,
+ (SELECT STDDEV(lowsodium/100) FROM ddmban_data WHERE lowsodium = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE lowsodium = 1) AS m,
+ (SELECT COUNT(lowsodium/100) FROM ddmban_data WHERE lowsodium = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for kosher and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            kosher = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for kosher and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE kosher = 1) AS x,
+ (SELECT AVG(kosher/100) FROM ddmban_data WHERE kosher = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE kosher = 1) AS a,
+ (SELECT STDDEV(kosher/100) FROM ddmban_data WHERE kosher = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE kosher = 1) AS m,
+ (SELECT COUNT(kosher/100) FROM ddmban_data WHERE kosher = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+/* Degree of freedom for lowfat and price */
+SELECT 
+    (((SELECT 
+            COUNT(*)
+        FROM
+            ddmban_data
+        WHERE
+            lowfat = 1) - 1) * (2 - 1))
+FROM
+    ddmban_data
+LIMIT 1;
+
+/* T-test for lowfat and price */
+
+WITH t_stats AS
+ (SELECT (SELECT AVG(price/100) FROM ddmban_data WHERE lowfat = 1) AS x,
+ (SELECT AVG(lowfat/100) FROM ddmban_data WHERE lowfat = 1) AS y,
+ (SELECT STDDEV(price/100) FROM ddmban_data WHERE lowfat = 1) AS a,
+ (SELECT STDDEV(lowfat/100) FROM ddmban_data WHERE lowfat = 1) AS b,
+ (SELECT COUNT(price/100) FROM ddmban_data WHERE lowfat = 1) AS m,
+ (SELECT COUNT(lowfat/100) FROM ddmban_data WHERE lowfat = 1) AS n
+ FROM ddmban_data)
+SELECT ROUND((x-y) / SQRT(((a*a)/m)+((b*b)/n)), 2) AS t_score
+FROM ddmban_data,
+t_stats
+LIMIT 1;
+
+
+
